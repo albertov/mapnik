@@ -959,7 +959,7 @@ int main()
 def boost_regex_has_icu(context):
     if env['RUNTIME_LINK'] == 'static':
         # re-order icu libs to ensure linux linker is happy
-        for lib_name in ['icui18n',env['ICU_LIB_NAME'],'icudata']:
+        for lib_name in ['icudata', 'icui18n',env['ICU_LIB_NAME'],'icudata']:
             if lib_name in context.env['LIBS']:
                 context.env['LIBS'].remove(lib_name)
             context.env.Append(LIBS=lib_name)
@@ -1398,6 +1398,8 @@ if not preconfigured:
     if has_boost_devel:
         if not env['HOST']:
             env['BOOST_LIB_VERSION_FROM_HEADER'] = conf.GetBoostLibVersion()
+        else:
+            env['BOOST_LIB_VERSION_FROM_HEADER'] = "1_60_0"
 
         # The other required boost headers.
         BOOST_LIBSHEADERS = [
@@ -1489,7 +1491,7 @@ if not preconfigured:
             for plugin in env['REQUESTED_PLUGINS']:
                 details = env['PLUGINS'][plugin]
                 if plugin == 'gdal':
-                    if conf.parse_config('GDAL_CONFIG',checks='--libs'):
+                    if conf.parse_config('GDAL_CONFIG',checks='--libs --dep-libs'):
                         conf.parse_config('GDAL_CONFIG',checks='--cflags')
                         libname = conf.get_pkg_lib('GDAL_CONFIG','gdal')
                         if libname:
@@ -1518,7 +1520,7 @@ if not preconfigured:
                         conf.parse_pg_config('PG_CONFIG')
                 elif plugin == 'ogr':
                     if conf.ogr_enabled():
-                        if conf.parse_config('GDAL_CONFIG',checks='--libs'):
+                        if conf.parse_config('GDAL_CONFIG',checks='--libs --dep-libs'):
                             conf.parse_config('GDAL_CONFIG',checks='--cflags')
                             libname = conf.get_pkg_lib('GDAL_CONFIG','ogr')
                             if libname:
@@ -1810,6 +1812,12 @@ if not preconfigured:
         pickle_dict = {}
         for i in pickle_store:
             pickle_dict[i] = env.get(i)
+            if i=='LIBS':
+                for l in pickle_dict[i]:
+                    try:
+                        pickle.dumps(l)
+                    except:
+                        pickle_dict[i].remove(l)
         pickle.dump(pickle_dict,env_cache)
         env_cache.close()
         # fix up permissions on configure outputs
