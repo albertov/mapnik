@@ -33,6 +33,7 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/interprocess/mapped_region.hpp>
 #include <boost/interprocess/streams/bufferstream.hpp>
+#include <boost/filesystem.hpp>
 #pragma GCC diagnostic pop
 #include <mapnik/mapped_memory_cache.hpp>
 #endif
@@ -41,7 +42,10 @@
 #include <iostream>
 #include <sstream>
 
+
 namespace mapnik { namespace detail {
+
+namespace fs = boost::filesystem;
 
 template <typename T>
 std::pair<bool,typename T::value_type::first_type> process_csv_file(T & boxes, std::string const& filename, std::string const& manual_headers, char separator, char quote)
@@ -70,9 +74,9 @@ std::pair<bool,typename T::value_type::first_type> process_csv_file(T & boxes, s
     }
 #else
  #if defined(_WINDOWS)
-    std::ifstream csv_file(mapnik::utf8_to_utf16(filename),std::ios_base::in | std::ios_base::binary);
+    fs::ifstream csv_file(mapnik::utf8_to_utf16(filename),std::ios_base::in | std::ios_base::binary);
  #else
-    std::ifstream csv_file(filename.c_str(),std::ios_base::in | std::ios_base::binary);
+    fs::ifstream csv_file(filename.c_str(),std::ios_base::in | std::ios_base::binary);
  #endif
     if (!csv_file.is_open())
     {

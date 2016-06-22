@@ -47,6 +47,7 @@
 #include <boost/fusion/include/std_pair.hpp>
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/property_tree/detail/xml_parser_read_rapidxml.hpp>
+#include <boost/filesystem.hpp>
 #pragma GCC diagnostic pop
 
 #include <string>
@@ -58,6 +59,7 @@
 namespace mapnik { namespace svg {
 
 namespace rapidxml = boost::property_tree::detail::rapidxml;
+namespace fs = boost::filesystem;
 
 bool traverse_tree(svg_parser & parser,rapidxml::xml_node<char> const* node);
 void end_element(svg_parser & parser,rapidxml::xml_node<char> const* node);
@@ -1055,9 +1057,9 @@ svg_parser::~svg_parser() {}
 bool svg_parser::parse(std::string const& filename)
 {
 #ifdef _WINDOWS
-    std::basic_ifstream<char> stream(mapnik::utf8_to_utf16(filename));
+    fs::basic_ifstream<char> stream(mapnik::utf8_to_utf16(filename));
 #else
-    std::basic_ifstream<char> stream(filename.c_str());
+    fs::basic_ifstream<char> stream(filename.c_str());
 #endif
     if (!stream)
     {
