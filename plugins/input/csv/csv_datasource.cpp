@@ -50,6 +50,7 @@
 #include <mapnik/warning_ignore.hpp>
 #include <boost/interprocess/mapped_region.hpp>
 #include <boost/interprocess/streams/bufferstream.hpp>
+#include <boost/filesystem.hpp>
 #pragma GCC diagnostic pop
 #include <mapnik/mapped_memory_cache.hpp>
 #endif
@@ -63,6 +64,8 @@
 
 using mapnik::datasource;
 using mapnik::parameters;
+
+namespace fs = boost::filesystem;
 
 DATASOURCE_PLUGIN(csv_datasource)
 
@@ -136,18 +139,14 @@ csv_datasource::csv_datasource(parameters const& params)
             throw std::runtime_error("could not create file mapping for " + filename_);
         }
 #elif defined (_WINDOWS)
-        std::ifstream in(mapnik::utf8_to_utf16(filename_),std::ios_base::in | std::ios_base::binary);
-        if (!in.is_open())
-        {
-            throw mapnik::datasource_exception("CSV Plugin: could not open: '" + filename_ + "'");
-        }
+        fs::ifstream in(mapnik::utf8_to_utf16(filename_),std::ios_base::in | std::ios_base::binary);
 #else
-        std::ifstream in(filename_.c_str(),std::ios_base::in | std::ios_base::binary);
+        fs::ifstream in(filename_.c_str(),std::ios_base::in | std::ios_base::binary);
+#endif
         if (!in.is_open())
         {
             throw mapnik::datasource_exception("CSV Plugin: could not open: '" + filename_ + "'");
         }
-#endif
         parse_csv(in);
 
         if (has_disk_index_ && !extent_initialized_)
@@ -365,9 +364,9 @@ boost::optional<mapnik::datasource_geometry_t> csv_datasource::get_geometry_type
     if (inline_string_.empty())
     {
 #if defined (_WINDOWS)
-        std::ifstream in(mapnik::utf8_to_utf16(filename_),std::ios_base::in | std::ios_base::binary);
+        fs::ifstream in(mapnik::utf8_to_utf16(filename_),std::ios_base::in | std::ios_base::binary);
 #else
-        std::ifstream in(filename_.c_str(),std::ios_base::in | std::ios_base::binary);
+        fs::ifstream in(filename_.c_str(),std::ios_base::in | std::ios_base::binary);
 #endif
         if (!in.is_open())
         {

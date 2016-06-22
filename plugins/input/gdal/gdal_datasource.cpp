@@ -32,10 +32,6 @@
 
 #include <gdal_version.h>
 
-#if defined(__GNUC__)
-  #include <future>
-#endif
-
 using mapnik::datasource;
 using mapnik::parameters;
 
@@ -48,6 +44,7 @@ using mapnik::featureset_ptr;
 using mapnik::layer_descriptor;
 using mapnik::datasource_exception;
 
+#ifndef __MINGW32__
 static std::once_flag once_flag;
 
 extern "C" MAPNIK_EXP void on_gdal_plugin_load()
@@ -57,6 +54,13 @@ extern "C" MAPNIK_EXP void on_gdal_plugin_load()
         GDALAllRegister();
     });
 }
+#else
+extern "C" MAPNIK_EXP void on_gdal_plugin_load()
+{
+    // initialize gdal formats
+    GDALAllRegister();
+}
+#endif
 
 gdal_datasource::gdal_datasource(parameters const& params)
     : datasource(params),

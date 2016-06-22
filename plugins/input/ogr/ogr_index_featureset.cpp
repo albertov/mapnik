@@ -80,9 +80,9 @@ ogr_index_featureset<filterT>::ogr_index_featureset(mapnik::context_ptr const & 
     }
 #else
   #if defined (WINDOWS)
-      std::ifstream file(mapnik::utf8_to_utf16(index_file), std::ios::in | std::ios::binary);
+      fs::ifstream file(mapnik::utf8_to_utf16(index_file), std::ios::in | std::ios::binary);
   #else
-      std::ifstream file(index_file.c_str(), std::ios::in | std::ios::binary);
+      fs::ifstream file(index_file.c_str(), std::ios::in | std::ios::binary);
   #endif
       ogr_index<filterT,std::ifstream>::query(filter,file,ids_);
 #endif
