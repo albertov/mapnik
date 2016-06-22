@@ -60,7 +60,7 @@ PluginInfo::PluginInfo(std::string const& filename,
           {
                 callable_returning_string name = reinterpret_cast<callable_returning_string>(dlsym(module_->dl, library_name.c_str()));
                 if (name) name_ = name();
-                callable_returning_void init_once = reinterpret_cast<callable_returning_void>(dlsym(module_->dl, "on_plugin_load"));
+                callable_returning_void init_once = reinterpret_cast<callable_returning_void>(dlsym(module_->dl, ("on_" + name_ + "_plugin_load").c_str()));
                 if (init_once) {
                     init_once();
                 }
@@ -72,7 +72,7 @@ PluginInfo::PluginInfo(std::string const& filename,
           {
                 callable_returning_string name = reinterpret_cast<callable_returning_string>(dlsym(module_->dl, library_name.c_str()));
                 if (name) name_ = name();
-                callable_returning_void init_once = reinterpret_cast<callable_returning_void>(dlsym(module_->dl, "on_plugin_load"));
+                callable_returning_void init_once = reinterpret_cast<callable_returning_void>(dlsym(module_->dl, ("on_" + name_ + "_plugin_load").c_str()));
                 if (init_once) {
                     init_once();
                 }
@@ -114,7 +114,7 @@ PluginInfo::~PluginInfo()
 void * PluginInfo::get_symbol(std::string const& sym_name) const
 {
 #ifdef MAPNIK_SUPPORTS_DLOPEN
-    return static_cast<void *>(dlsym(module_->dl, sym_name.c_str()));
+    return reinterpret_cast<void *>(dlsym(module_->dl, sym_name.c_str()));
 #else
     return nullptr;
 #endif

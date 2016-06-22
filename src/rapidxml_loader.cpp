@@ -36,12 +36,14 @@
 #pragma GCC diagnostic push
 #include <mapnik/warning_ignore.hpp>
 #include <boost/property_tree/detail/xml_parser_read_rapidxml.hpp>
+#include <boost/filesystem.hpp>
 #pragma GCC diagnostic pop
 
 // stl
 #include <iostream>
 #include <fstream>
 
+namespace fs = boost::filesystem;
 namespace rapidxml = boost::property_tree::detail::rapidxml;
 
 namespace mapnik
@@ -62,9 +64,9 @@ public:
         }
         filename_ = filename;
 #ifdef _WINDOWS
-        std::basic_ifstream<char> stream(mapnik::utf8_to_utf16(filename));
+        fs::basic_ifstream<char> stream(mapnik::utf8_to_utf16(filename));
 #else
-        std::basic_ifstream<char> stream(filename.c_str());
+        fs::basic_ifstream<char> stream(filename.c_str());
 #endif
         if (!stream)
         {

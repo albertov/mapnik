@@ -37,6 +37,7 @@
 #pragma GCC diagnostic push
 #include <mapnik/warning_ignore.hpp>
 #include <boost/algorithm/string.hpp>
+#include <boost/filesystem.hpp>
 #pragma GCC diagnostic pop
 
 // stl
@@ -59,10 +60,9 @@ using mapnik::datasource_exception;
 using mapnik::filter_in_box;
 using mapnik::filter_at_point;
 
-#if defined(__GNUC__)
-  #include <future>
-#endif
+namespace fs = boost::filesystem;
 
+#ifndef __MINGW32__
 static std::once_flag once_flag;
 
 extern "C" MAPNIK_EXP void on_plugin_load()
@@ -73,6 +73,14 @@ extern "C" MAPNIK_EXP void on_plugin_load()
         OGRRegisterAll();
     });
 }
+#else
+extern "C" MAPNIK_EXP void on_ogr_plugin_load()
+{
+    // initialize ogr formats
+    // NOTE: in GDAL >= 2.0 this is the same as GDALAllRegister()
+    OGRRegisterAll();
+}
+#endif
 
 ogr_datasource::ogr_datasource(parameters const& params)
     : datasource(params),
@@ -304,9 +312,9 @@ void ogr_datasource::init(mapnik::parameters const& params)
     index_name_ = dataset_name_.substr(0, breakpoint) + ".ogrindex";
 
 #if defined (_WINDOWS)
-    std::ifstream index_file(mapnik::utf8_to_utf16(index_name_), std::ios::in | std::ios::binary);
+    fs::ifstream index_file(mapnik::utf8_to_utf16(index_name_), std::ios::in | std::ios::binary);
 #else
-    std::ifstream index_file(index_name_.c_str(), std::ios::in | std::ios::binary);
+    fs::ifstream index_file(index_name_.c_str(), std::ios::in | std::ios::binary);
 #endif
 
     if (index_file)
