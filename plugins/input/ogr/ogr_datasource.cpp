@@ -59,6 +59,10 @@ using mapnik::datasource_exception;
 using mapnik::filter_in_box;
 using mapnik::filter_at_point;
 
+#if defined(__GNUC__)
+  #include <future>
+#endif
+
 static std::once_flag once_flag;
 
 extern "C" MAPNIK_EXP void on_ogr_plugin_load()

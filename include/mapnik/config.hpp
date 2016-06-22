@@ -25,7 +25,7 @@
 
 // Windows DLL support
 
-#ifdef _WINDOWS
+#if defined(_WINDOWS) && !defined(__GNUC__)
 #  define MAPNIK_EXP __declspec (dllexport)
 #  define MAPNIK_IMP __declspec (dllimport)
 #  ifdef MAPNIK_EXPORTS
