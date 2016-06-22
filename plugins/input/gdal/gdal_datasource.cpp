@@ -32,6 +32,10 @@
 
 #include <gdal_version.h>
 
+#if defined(__GNUC__)
+  #include <future>
+#endif
+
 using mapnik::datasource;
 using mapnik::parameters;
 
