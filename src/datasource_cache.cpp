@@ -45,6 +45,7 @@ namespace mapnik {
 template class singleton<datasource_cache, CreateStatic>;
 
 extern datasource_ptr create_static_datasource(parameters const& params);
+extern void initialize_static_datasources();
 extern std::vector<std::string> get_static_datasource_names();
 
 bool is_input_plugin(std::string const& filename)
@@ -55,6 +56,7 @@ bool is_input_plugin(std::string const& filename)
 datasource_cache::datasource_cache()
 {
     PluginInfo::init();
+    initialize_static_datasources();
 }
 
 datasource_cache::~datasource_cache()

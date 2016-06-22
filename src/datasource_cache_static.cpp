@@ -42,6 +42,7 @@
     #endif
     #if defined(MAPNIK_STATIC_PLUGIN_GDAL)
         #include "input/gdal/gdal_datasource.hpp"
+        extern "C" MAPNIK_EXP void on_gdal_plugin_load();
     #endif
     #if defined(MAPNIK_STATIC_PLUGIN_GEOJSON)
         #include "input/geojson/geojson_datasource.hpp"
@@ -57,6 +58,7 @@
     #endif
     #if defined(MAPNIK_STATIC_PLUGIN_OGR)
         #include "input/ogr/ogr_datasource.hpp"
+        extern "C" MAPNIK_EXP void on_ogr_plugin_load();
     #endif
     #if defined(MAPNIK_STATIC_PLUGIN_OSM)
         #include "input/osm/osm_datasource.hpp"
@@ -161,6 +163,43 @@ std::vector<std::string> get_static_datasource_names()
 #endif
 
     return names;
+}
+
+void initialize_static_datasources ()
+{
+#if defined(MAPNIK_STATIC_PLUGIN_CSV)
+//    on_csv_plugin_load();
+#endif
+#if defined(MAPNIK_STATIC_PLUGIN_GDAL)
+    on_gdal_plugin_load();
+#endif
+#if defined(MAPNIK_STATIC_PLUGIN_GEOJSON)
+//   on_geojson_plugin_load();
+#endif
+#if defined(MAPNIK_STATIC_PLUGIN_OCCI)
+//   on_occi_plugin_load();
+#endif
+#if defined(MAPNIK_STATIC_PLUGIN_OGR)
+    on_ogr_plugin_load();
+#endif
+#if defined(MAPNIK_STATIC_PLUGIN_OSM)
+//   on_osm_plugin_load();
+#endif
+#if defined(MAPNIK_STATIC_PLUGIN_POSTGIS)
+//   on_postgis_plugin_load();
+#endif
+#if defined(MAPNIK_STATIC_PLUGIN_RASTER)
+//   on_raster_plugin_load();
+#endif
+#if defined(MAPNIK_STATIC_PLUGIN_RASTERLITE)
+//   on_rasterlite_plugin_load();
+#endif
+#if defined(MAPNIK_STATIC_PLUGIN_SHAPE)
+//   on_shape_plugin_load();
+#endif
+#if defined(MAPNIK_STATIC_PLUGIN_SQLITE)
+//   on_sqlite_plugin_load();
+#endif
 }
 
 }

@@ -61,7 +61,7 @@ using mapnik::filter_at_point;
 
 static std::once_flag once_flag;
 
-extern "C" MAPNIK_EXP void on_plugin_load()
+extern "C" MAPNIK_EXP void on_ogr_plugin_load()
 {
     // initialize ogr formats
     // NOTE: in GDAL >= 2.0 this is the same as GDALAllRegister()

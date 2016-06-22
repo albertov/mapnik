@@ -60,7 +60,7 @@ PluginInfo::PluginInfo(std::string const& filename,
           {
                 callable_returning_string name = reinterpret_cast<callable_returning_string>(dlsym(module_->dl, library_name.c_str()));
                 if (name) name_ = name();
-                callable_returning_void init_once = reinterpret_cast<callable_returning_void>(dlsym(module_->dl, "on_plugin_load"));
+                callable_returning_void init_once = reinterpret_cast<callable_returning_void>(dlsym(module_->dl, "on_" + name + "_plugin_load"));
                 if (init_once) {
                     init_once();
                 }
@@ -70,9 +70,10 @@ PluginInfo::PluginInfo(std::string const& filename,
           if (module_) module_->dl = dlopen(filename.c_str(),RTLD_LAZY);
           if (module_ && module_->dl)
           {
+                std::cerr << "on_plugin_load" << std::endl;
                 callable_returning_string name = reinterpret_cast<callable_returning_string>(dlsym(module_->dl, library_name.c_str()));
                 if (name) name_ = name();
-                callable_returning_void init_once = reinterpret_cast<callable_returning_void>(dlsym(module_->dl, "on_plugin_load"));
+                callable_returning_void init_once = reinterpret_cast<callable_returning_void>(dlsym(module_->dl, "on_" + name + "_plugin_load"));
                 if (init_once) {
                     init_once();
                 }
